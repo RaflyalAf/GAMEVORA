@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>My Vault Profile | Gamevora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --sat: env(safe-area-inset-top); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #050505; 
+            color: white; 
+            scroll-behavior: smooth; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Custom Glassmorphism */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover { border-color: rgba(147, 51, 234, 0.3); }
+        
+        /* Form Styling */
+        input { 
+            background: rgba(255, 255, 255, 0.03) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.08) !important; 
+            color: white; 
+            outline: none; 
+            transition: all 0.3s ease;
+        }
+        input:focus { 
+            border-color: #9333ea !important; 
+            background: rgba(147, 51, 234, 0.05) !important;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.1);
+        }
+
+        .active-scale:active { transform: scale(0.96); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Animated Gradient Border */
+        .profile-ring {
+            background: linear-gradient(45deg, #9333ea, #3b82f6, #9333ea);
+            background-size: 200% 200%;
+            animation: gradientMove 5s ease infinite;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="pb-20">
+    <nav class="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-xl border-b border-white/5 h-20 flex items-center justify-between px-6 md:px-12" style="padding-top: var(--sat);">
+        <a href="index.html" class="text-xl font-black italic tracking-tighter text-purple-400 uppercase hover:opacity-80 transition">GAMEVORA</a>
+        <a href="index.html" class="text-[10px] font-black uppercase text-gray-500 hover:text-white transition flex items-center gap-2 active-scale">
+            <span class="text-lg">←</span> Back to Store
+        </a>
+    </nav>
+
+    <main class="max-w-6xl mx-auto pt-32 px-4 md:px-8 space-y-8">
+        <section class="glass-card p-6 md:p-10 rounded-[40px] flex flex-col md:flex-row items-center gap-6 md:gap-10">
+            <div class="relative group">
+                <div class="w-28 h-28 md:w-36 md:h-36 rounded-full profile-ring p-1 shadow-[0_0_40px_rgba(147,51,234,0.2)]">
+                    <img id="display-avatar" src="https://ui-avatars.com/api/?name=User&background=111&color=fff" class="w-full h-full rounded-full object-cover bg-[#111]">
+                </div>
+                <div class="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-[#050505] animate-pulse"></div>
+            </div>
+            <div class="text-center md:text-left flex-grow">
+                <h1 id="display-name" class="text-3xl md:text-5xl font-black italic uppercase tracking-tighter leading-none mb-2">Loading...</h1>
+                <p id="display-email" class="text-gray-500 font-semibold text-sm lowercase mb-4 opacity-80"></p>
+                <div class="flex flex-wrap justify-center md:justify-start gap-2">
+                    <span class="px-4 py-1.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-[8px] font-black uppercase tracking-widest">Premium Member</span>
+                    <span class="px-4 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-[8px] font-black uppercase tracking-widest">Vault Access</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+            <div class="glass-card p-5 md:p-8 rounded-[30px] border-b-4 border-purple-600 flex flex-col justify-center min-w-0">
+                <p class="text-gray-500 text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] mb-1">Orders</p>
+                <h2 id="stat-orders" class="text-2xl md:text-4xl font-black italic tracking-tighter text-white truncate leading-none">0</h2>
+            </div>
+            
+            <div class="glass-card p-5 md:p-8 rounded-[30px] border-b-4 border-green-500 flex flex-col justify-center min-w-0 overflow-hidden">
+                <p class="text-gray-500 text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] mb-1">Spent</p>
+                <h2 id="stat-spending" class="text-[16px] xs:text-[20px] sm:text-[24px] md:text-4xl font-black italic tracking-tighter text-green-400 truncate leading-tight">Rp0</h2>
+            </div>
+            
+            <div class="glass-card p-5 md:p-8 rounded-[30px] border-b-4 border-blue-500 col-span-2 md:col-span-1 flex flex-col justify-center min-w-0">
+                <p class="text-gray-500 text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] mb-1">Games Owned</p>
+                <h2 id="stat-games" class="text-2xl md:text-4xl font-black italic tracking-tighter text-blue-400 truncate leading-none">0</h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass-card p-8 rounded-[40px]">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-1.5 h-6 bg-purple-500 rounded-full"></div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em]">General Settings</h3>
+                    </div>
+                    <form id="profile-form" class="space-y-5">
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-black uppercase text-gray-500 ml-2 tracking-widest">Avatar URL</label>
+                            <input type="url" id="input-avatar-url" placeholder="https://image-link.com" class="w-full px-5 py-4 rounded-2xl text-xs font-bold">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-black uppercase text-gray-500 ml-2 tracking-widest">Full Name</label>
+                            <input type="text" id="input-fullname" class="w-full px-5 py-4 rounded-2xl text-xs font-bold">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-black uppercase text-gray-500 ml-2 tracking-widest">Username</label>
+                            <input type="text" id="input-username" class="w-full px-5 py-4 rounded-2xl text-xs font-bold">
+                        </div>
+                        <button type="submit" id="btn-save-profile" class="w-full bg-white text-black py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-purple-600 hover:text-white transition active-scale shadow-2xl mt-4">
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+
+                <div class="glass-card p-8 rounded-[40px]">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-1.5 h-6 bg-red-500 rounded-full"></div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em]">Security Access</h3>
+                    </div>
+                    <form id="password-form" class="space-y-5">
+                        <input type="password" id="new-password" placeholder="New Password" class="w-full px-5 py-4 rounded-2xl text-xs" required minlength="6">
+                        <input type="password" id="confirm-password" placeholder="Confirm Password" class="w-full px-5 py-4 rounded-2xl text-xs" required minlength="6">
+                        <button type="submit" id="btn-save-password" class="w-full bg-red-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-500 transition active-scale shadow-xl">
+                            Update Password
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7">
+                <div class="glass-card p-8 rounded-[40px] min-h-[600px] flex flex-col">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div>
+                            <h3 class="text-xs font-black uppercase tracking-[0.2em]">Library Inventory</h3>
+                        </div>
+                        <span id="inventory-count-badge" class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black uppercase">0 Items</span>
+                    </div>
+                    
+                    <div id="my-games-list" class="space-y-4 flex-grow no-scrollbar overflow-y-auto">
+                        <div class="flex flex-col items-center justify-center py-24 opacity-20">
+                            <div class="w-10 h-10 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <p class="text-[9px] font-black uppercase italic mt-4 tracking-widest">Synchronizing Database...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] z-50">
+        <button onclick="handleLogout()" class="w-full glass-card bg-red-600/10 border-red-500/20 text-red-500 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest backdrop-blur-xl active-scale">
+            Logout from Vault
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

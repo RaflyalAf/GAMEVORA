@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gamevora | Ultimate Digital Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #050505; 
+            color: white; 
+            scroll-behavior: smooth; 
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Navbar & Content Spacing */
+        .glass-nav { 
+            background: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            padding-top: var(--sat);
+            height: calc(80px + var(--sat));
+        }
+
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+        
+        /* Slider Adjustments */
+        #hero-wrapper { display: flex; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dot { transition: all 0.4s ease; }
+        
+        /* FAQ Styling */
+        .faq-icon { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .faq-item { transition: all 0.4s ease; }
+
+        /* Utility */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .text-gradient { 
+            background: linear-gradient(to right, #a855f7, #60a5fa); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        /* Mobile Touch Optimizations */
+        @media (max-width: 768px) {
+            input, select { font-size: 16px !important; }
+            #hero-slider { height: 380px; border-radius: 35px; }
+            .nav-item { font-size: 8.5px; letter-spacing: 0.15em; }
+        }
+
+        .active-scale:active { transform: scale(0.95); transition: 0.1s; }
+    </style>
+</head>
+<body class="selection:bg-purple-500">
+
+    <nav class="fixed top-0 w-full z-[100] glass-nav border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-full flex items-center justify-between">
+            <div class="flex-none">
+                <a href="index.html" class="text-xl md:text-2xl font-black italic tracking-tighter text-gradient">GAMEVORA</a>
+            </div>
+
+            <div class="flex-grow flex justify-center overflow-x-auto no-scrollbar px-4">
+                <div class="flex items-center gap-5 md:gap-12 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
+                    <a href="index.html" class="nav-item text-purple-400">Home</a>
+                    <a href="#store" class="nav-item text-gray-400 hover:text-white transition">Store</a>
+                    <a href="dashboard.html" class="nav-item text-gray-400 hover:text-white transition">My Library</a>
+                    <a href="#faq-section" class="nav-item text-gray-400 hover:text-white transition">FAQ</a>
+                </div>
+            </div>
+
+            <div id="nav-auth" class="flex-none flex items-center gap-2 md:gap-4">
+                <a href="admin.html" id="admin-link" class="hidden text-[8px] md:text-[10px] text-purple-400 border border-purple-500/30 px-3 md:px-5 py-2 rounded-full font-black uppercase tracking-widest active-scale">Admin</a>
+                <div id="auth-placeholder">
+                    <a href="login.html" class="bg-white text-black text-[9px] md:text-[10px] font-black px-4 md:px-6 py-2 rounded-full active-scale uppercase shadow-xl tracking-tighter">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative max-w-7xl mx-auto px-4 md:px-6 pt-[120px] md:pt-[140px] mb-12">
+        <div id="hero-slider" class="relative w-full overflow-hidden rounded-[40px] md:rounded-[60px] glass-card border border-white/10 shadow-2xl h-[450px] md:h-[600px]">
+            <div id="hero-wrapper" class="h-full w-full">
+                <div class="min-w-full h-full flex items-center justify-center">
+                    <div class="inline-block w-8 h-8 border-[3px] border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+
+            <div class="hidden md:flex absolute bottom-10 right-10 gap-4 z-30">
+                <button onclick="prevSlide()" class="w-14 h-14 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl flex items-center justify-center hover:bg-white hover:text-black transition-all active-scale shadow-2xl">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button onclick="nextSlide()" class="w-14 h-14 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl flex items-center justify-center hover:bg-white hover:text-black transition-all active-scale shadow-2xl">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+            
+            <div id="hero-dots" class="absolute bottom-8 left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0 flex gap-2.5 z-30"></div>
+        </div>
+    </section>
+
+    <main id="store" class="max-w-7xl mx-auto px-4 md:px-6 py-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+            <div class="space-y-2">
+                <span class="text-[9px] md:text-[10px] font-black text-purple-500 uppercase tracking-[0.4em]">Digital Collection</span>
+                <h2 class="text-4xl md:text-5xl font-black italic uppercase tracking-tighter leading-none">Vault Items</h2>
+                <div class="flex gap-1.5 pt-1">
+                    <div class="w-12 h-1 bg-purple-600 rounded-full"></div>
+                    <div class="w-3 h-1 bg-blue-500 rounded-full"></div>
+                </div>
+            </div>
+            
+            <div class="flex bg-white/5 p-1.5 rounded-[24px] border border-white/10 focus-within:border-purple-500/50 transition-all w-full md:w-auto shadow-2xl">
+                <input type="text" id="search-input" placeholder="Search Vault..." class="bg-transparent px-5 py-2.5 outline-none text-[12px] w-full md:w-72 text-white font-semibold uppercase tracking-tight">
+                <button onclick="fetchGames(document.getElementById('search-input').value)" class="bg-purple-600 px-6 md:px-8 py-3 rounded-[18px] text-[10px] font-black uppercase tracking-widest hover:bg-purple-500 transition active-scale">Find</button>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 md:gap-3 mb-12 no-scrollbar overflow-x-auto pb-4">
+            <button onclick="filterBy('all')" class="filter-btn bg-purple-600 border border-white/5 px-5 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest active-scale">All</button>
+            <button onclick="filterBy('trending')" class="filter-btn bg-white/5 border border-white/5 px-5 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest active-scale text-red-500">Trending</button>
+            <button onclick="filterBy('Online')" class="filter-btn bg-white/5 border border-white/5 px-5 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest active-scale text-blue-400">Online</button>
+            <button onclick="filterBy('Offline')" class="filter-btn bg-white/5 border border-white/5 px-5 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest active-scale text-green-400">Offline</button>
+            
+            <div class="relative">
+                <select onchange="filterBy(this.value)" class="appearance-none bg-white/5 border border-white/5 px-5 py-2.5 pr-8 rounded-2xl text-[9px] font-black uppercase tracking-widest outline-none active-scale">
+                    <option value="all">Genres</option>
+                    <option value="Action">Action</option>
+                    <option value="RPG">RPG</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Survival">Survival</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="game-list" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10 px-2 sm:px-0">
+            <div class="col-span-full text-center py-32 opacity-20">
+                <div class="inline-block w-8 h-8 border-2 border-white/30 border-t-purple-500 rounded-full animate-spin"></div>
+                <p class="mt-4 text-[9px] font-black uppercase tracking-[0.4em]">Syncing Vault...</p>
+            </div>
+        </div>
+    </main>
+
+    <section id="faq-section" class="max-w-7xl mx-auto px-4 md:px-6 py-24 border-t border-white/5">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-6xl font-black italic uppercase tracking-tighter italic">Common Questions</h2>
+            <p class="text-gray-500 text-[10px] font-black uppercase tracking-[0.4em] mt-4">Pusat Bantuan Vault</p>
+        </div>
+
+        <div class="max-w-3xl mx-auto space-y-4">
+            <div class="faq-item group bg-white/[0.02] border border-white/5 rounded-[30px] overflow-hidden transition-all duration-300">
+                <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                    <span class="font-black uppercase text-[10px] md:text-xs tracking-widest group-hover:text-purple-400 transition leading-relaxed">Bagaimana jika game nya tidak bisa di download steam?</span>
+                    <span class="faq-icon text-gray-500 transition-transform duration-300">▼</span>
+                </button>
+                <div class="faq-content hidden px-8 pb-8">
+                    <p class="text-gray-400 text-[10px] md:text-xs leading-relaxed uppercase font-medium">
+                        Silahkan langsung gabung komunitas discord kita, karena cara benerin nya ada disana!
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item group bg-white/[0.02] border border-white/5 rounded-[30px] overflow-hidden transition-all duration-300">
+                <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                    <span class="font-black uppercase text-[10px] md:text-xs tracking-widest group-hover:text-purple-400 transition leading-relaxed">Berapa lama proses verifikasi pembayaran?</span>
+                    <span class="faq-icon text-gray-500 transition-transform duration-300">▼</span>
+                </button>
+                <div class="faq-content hidden px-8 pb-8">
+                    <p class="text-gray-400 text-[10px] md:text-xs leading-relaxed uppercase font-medium">
+                        Proses verifikasi manual dilakukan oleh Admin Gamevora. Biasanya memakan waktu 5-30 menit tergantung antrean pesanan di Vault. Mohon tunggu notifikasi status di My Library.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item group bg-white/[0.02] border border-white/5 rounded-[30px] overflow-hidden transition-all duration-300">
+                <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                    <span class="font-black uppercase text-[10px] md:text-xs tracking-widest group-hover:text-purple-400 transition leading-relaxed">Apakah game bisa didownload ulang jika file rusak?</span>
+                    <span class="faq-icon text-gray-500 transition-transform duration-300">▼</span>
+                </button>
+                <div class="faq-content hidden px-8 pb-8">
+                    <p class="text-gray-400 text-[10px] md:text-xs leading-relaxed uppercase font-medium">
+                        Ya! Game yang sudah dibeli tersimpan di Library selamanya. Kamu bisa download ulang kapan saja tanpa biaya tambahan.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item group bg-white/[0.02] border border-white/5 rounded-[30px] overflow-hidden transition-all duration-300">
+                <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                    <span class="font-black uppercase text-[10px] md:text-xs tracking-widest group-hover:text-purple-400 transition leading-relaxed">Jika Pixeldrain kena bandwith limit, apa solusinya?</span>
+                    <span class="faq-icon text-gray-500 transition-transform duration-300">▼</span>
+                </button>
+                <div class="faq-content hidden px-8 pb-8">
+                    <p class="text-gray-400 text-[10px] md:text-xs leading-relaxed uppercase font-medium">
+                       <p class="text-gray-400 text-[10px] md:text-xs leading-relaxed uppercase font-medium">Gunakan VPN untuk mengganti IP sementara:</p>
+                        <p class="text-gray-400 text-[10px] md:text-xs leading-relaxed uppercase font-medium">• WARP by Cloudflare (1.1.1.1) — gratis & cepat</p>
+                        <p class="text-gray-400 text-[10px] md:text-xs leading-relaxed uppercase font-medium">• Ekstensi VPN browser (Windscribe, ProtonVPN)
+                            Setelah IP berubah, download kembali.</p>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="mt-24 border-t border-white/5 py-16 px-6 bg-black">
+        <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
+            <h3 class="text-2xl font-black italic tracking-tighter text-gradient mb-3 uppercase">GAMEVORA</h3>
+            <p class="text-gray-600 text-[10px] font-bold uppercase tracking-widest max-w-xs mb-10 leading-loose opacity-50">Ultimate Digital Marketplace for software & gaming.</p>
+            <p class="text-gray-800 text-[8px] font-black tracking-[0.4em] uppercase pt-8 border-t border-white/5 w-full">© 2026 GAMEVORA VAULT. ALL RIGHTS RESERVED.</p>
+        </div>
+    </footer>
+
+    <a href="https://discord.gg/AAk9SyMN" target="_blank" class="fixed bottom-6 right-6 z-[100] group active-scale flex items-center justify-center w-14 h-14 rounded-2xl bg-[#5865F2] shadow-2xl border border-white/10 overflow-hidden">
+        <svg class="w-7 h-7 text-white" viewBox="0 0 127.14 96.36" fill="currentColor"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.71,32.65-1.82,56.63.31,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.41-16.14h0C129.58,53.79,124.34,29.82,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5.12-12.69,11.45-12.69S53.91,46,53.91,53,48.77,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.23,60,73.23,53s5.12-12.69,11.46-12.69S96.16,46,96.16,53,91.07,65.69,84.69,65.69Z"/></svg>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Logika Lokal FAQ Accordion (Jika tidak ditaruh di app.js)
+        function toggleFAQ(element) {
+            const content = element.nextElementSibling;
+            const icon = element.querySelector('.faq-icon');
+            const allContents = document.querySelectorAll('.faq-content');
+            const allIcons = document.querySelectorAll('.faq-icon');
+
+            allContents.forEach((item, index) => {
+                if (item !== content) {
+                    item.classList.add('hidden');
+                    allIcons[index].style.transform = 'rotate(0deg)';
+                }
+            });
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+                element.parentElement.classList.add('border-purple-500/30', 'bg-purple-500/5');
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+                element.parentElement.classList.remove('border-purple-500/30', 'bg-purple-500/5');
+            }
+        }
+    </script>
+</body>
+</html>

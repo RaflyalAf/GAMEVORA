@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Login | Gamevora Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #050505; 
+            color: white; 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .glass { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+        
+        /* Fix Autofill Color */
+        input:-webkit-autofill {
+            -webkit-text-fill-color: white !important;
+            -webkit-box-shadow: 0 0 0px 1000px #121212 inset !important;
+        }
+
+        /* Mobile specific fixes */
+        @media (max-width: 640px) {
+            .glass { border-radius: 35px; border: none; background: rgba(255, 255, 255, 0.03); }
+            input { font-size: 16px !important; } /* Stop iOS Auto-zoom */
+        }
+    </style>
+</head>
+<body class="p-6">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-600/20 blur-[100px] md:blur-[150px] -z-10 animate-pulse"></div>
+
+    <div class="glass w-full max-w-[420px] p-8 md:p-12 rounded-[45px] shadow-2xl relative z-50">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-black italic tracking-tighter bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent uppercase">GAMEVORA</h1>
+            <p class="text-gray-500 text-[9px] mt-3 uppercase tracking-[0.3em] font-black opacity-80">Access Secured Vault</p>
+        </div>
+
+        <form id="login-form" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Email Address</label>
+                <input type="email" id="email" class="w-full bg-white/5 border border-white/10 rounded-[20px] px-6 py-4 outline-none focus:border-purple-500 transition-all text-sm md:text-base font-medium" placeholder="your@email.com" required>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="flex justify-between items-center px-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-gray-500">Password</label>
+                    <a href="forgot-password.html" class="text-[9px] font-black text-purple-400/70 hover:text-purple-400 uppercase tracking-tighter transition">Forgot?</a>
+                </div>
+                <input type="password" id="password" class="w-full bg-white/5 border border-white/10 rounded-[20px] px-6 py-4 outline-none focus:border-purple-500 transition-all text-sm md:text-base font-medium" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" id="btn-auth" class="w-full bg-white text-black font-black py-4 md:py-5 rounded-[22px] hover:bg-purple-600 hover:text-white transition-all active:scale-95 shadow-2xl shadow-purple-500/10 mt-4 text-[11px] tracking-[0.2em] uppercase">
+                Sign In
+            </button>
+        </form>
+
+        <div class="mt-10 text-center">
+            <p class="text-[11px] text-gray-600 font-bold uppercase tracking-widest">
+                New user? 
+                <a href="register.html" class="text-purple-400 hover:text-white transition underline underline-offset-4 ml-1">Create Account</a>
+            </p>
+            <a href="index.html" class="inline-block mt-8 text-[9px] font-black text-gray-700 hover:text-gray-400 transition uppercase tracking-[0.3em]">← Back to Store</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://meruqlvbymsaeaxybxaz.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_JpMK5MzO-awEkOOvr7t-xg_bBkobHLf'; 
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Form Submission Handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-auth');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            btn.innerText = "VERIFYING...";
+            btn.disabled = true;
+
+            try {
+                const { error } = await _supabase.auth.signInWithPassword({ email, password });
+
+                if (error) {
+                    alert("Auth Failed: " + error.message);
+                    btn.innerText = "SIGN IN";
+                    btn.disabled = false;
+                } else {
+                    window.location.href = "index.html";
+                }
+            } catch (err) {
+                alert("Network Error. Please try again.");
+                btn.innerText = "SIGN IN";
+                btn.disabled = false;
+            }
+        });
+
+        // Simple Session Check
+        async function checkLoggedIn() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (user) window.location.href = "index.html";
+        }
+        checkLoggedIn();
+    </script>
+</body>
+</html>

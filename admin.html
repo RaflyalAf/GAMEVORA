@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Master Center | Gamevora Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --sat: env(safe-area-inset-top); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #050505; 
+            color: white; 
+            opacity: 0; 
+            transition: opacity 0.5s; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+        }
+        input, textarea, select { 
+            background: rgba(0, 0, 0, 0.4) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            transition: all 0.3s; 
+            color: white; 
+        }
+        input:focus, textarea:focus, select:focus { 
+            border-color: #9333ea !important; 
+            outline: none; 
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.1); 
+        }
+        .tab-btn.active { background: rgba(168, 85, 247, 0.1); color: #a855f7; border-color: rgba(168, 85, 247, 0.2); }
+        .active-scale:active { transform: scale(0.95); transition: 0.1s; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="fixed w-full z-50 bg-black/50 backdrop-blur-md border-b border-white/5" style="padding-top: var(--sat);">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <h2 class="text-lg font-black italic tracking-tighter bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent uppercase whitespace-nowrap">GAMEVORA ADMIN</h2>
+                <div class="flex overflow-x-auto no-scrollbar gap-1">
+                    <button onclick="switchTab('upload')" id="tab-upload" class="tab-btn active px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition">Uploader</button>
+                    <button onclick="switchTab('users')" id="tab-users" class="tab-btn px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition">Users</button>
+                    <button onclick="switchTab('inventory')" id="tab-inventory" class="tab-btn px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition">Inventory</button>
+                </div>
+            </div>
+            <a href="index.html" class="text-[10px] font-black uppercase text-gray-500 hover:text-white transition underline">Exit</a>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto">
+        
+        <section id="section-upload" class="tab-content space-y-10">
+            <div class="px-2">
+                <h1 class="text-3xl md:text-4xl font-black tracking-tighter italic uppercase leading-none" id="form-title">Vault Uploader</h1>
+                <p class="text-gray-500 text-xs italic mt-2">Manage Database Record, Specs & Links.</p>
+            </div>
+            <form id="master-upload-form" class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="glass-card p-6 md:p-8 rounded-[35px] space-y-5">
+                        <h3 class="text-[10px] font-black text-purple-500 uppercase tracking-widest">Main Info</h3>
+                        <input type="hidden" id="edit-id">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="title" placeholder="Game Title" class="w-full px-5 py-3.5 rounded-2xl" required>
+                            <input type="text" id="genre" placeholder="Genre" class="w-full px-5 py-3.5 rounded-2xl" required>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <select id="connectivity_type" class="w-full px-5 py-3.5 rounded-2xl">
+                                <option value="Offline">Offline Mode</option>
+                                <option value="Online">Online Multiplayer</option>
+                            </select>
+                            <div class="flex items-center gap-4 p-3 bg-white/5 rounded-2xl border border-white/5">
+                                <input type="checkbox" id="is_trending" class="w-5 h-5 accent-purple-600">
+                                <label for="is_trending" class="text-[9px] font-black uppercase text-gray-400">🔥 Trending</label>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" id="price" placeholder="Price" class="w-full px-5 py-3.5 rounded-2xl" required>
+                            <input type="number" id="discount_price" placeholder="Promo" class="w-full px-5 py-3.5 rounded-2xl">
+                        </div>
+                        <input type="url" id="thumbnail" placeholder="Thumbnail URL" class="w-full px-5 py-3.5 rounded-2xl" required>
+                        <textarea id="description" rows="4" placeholder="Description" class="w-full px-5 py-3.5 rounded-2xl"></textarea>
+                    </div>
+
+                    <div class="glass-card p-6 md:p-8 rounded-[35px] space-y-6">
+                        <h3 class="text-[10px] font-black text-blue-400 uppercase tracking-widest">PC Specifications</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="min_os" placeholder="OS (Min)" class="px-4 py-3 rounded-xl text-[10px]">
+                            <input type="text" id="min_cpu" placeholder="CPU (Min)" class="px-4 py-3 rounded-xl text-[10px]">
+                            <input type="text" id="min_ram" placeholder="RAM (Min)" class="px-4 py-3 rounded-xl text-[10px]">
+                            <input type="text" id="min_gpu" placeholder="GPU (Min)" class="px-4 py-3 rounded-xl text-[10px]">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="rec_os" placeholder="OS (Rec)" class="px-4 py-3 rounded-xl text-[10px]">
+                            <input type="text" id="rec_cpu" placeholder="CPU (Rec)" class="px-4 py-3 rounded-xl text-[10px]">
+                            <input type="text" id="rec_ram" placeholder="RAM (Rec)" class="px-4 py-3 rounded-xl text-[10px]">
+                            <input type="text" id="rec_gpu" placeholder="GPU (Rec)" class="px-4 py-3 rounded-xl text-[10px]">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="glass-card p-6 md:p-8 rounded-[35px] space-y-5">
+                        <h3 class="text-[10px] font-black text-green-400 uppercase tracking-widest text-center">Download Links (5 Max)</h3>
+                        <div id="links-wrapper" class="space-y-3"></div>
+                        <button type="submit" id="main-upload-btn" class="w-full bg-white text-black py-5 rounded-[24px] font-black text-xs uppercase hover:bg-purple-600 hover:text-white transition active-scale">Push to Database</button>
+                        <button type="button" onclick="resetForm()" class="w-full text-gray-500 text-[9px] font-bold uppercase">Reset Form</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <section id="section-users" class="tab-content hidden space-y-10">
+            <div class="px-2 flex justify-between items-end">
+                <div>
+                    <h1 class="text-3xl font-black italic uppercase leading-none">User Control</h1>
+                    <p class="text-gray-500 text-xs italic mt-2 text-white/50">Manage accounts & inspect vault access.</p>
+                </div>
+                <input type="text" id="search-user-input" placeholder="Search Identity..." class="px-5 py-3 rounded-2xl text-[10px] w-64 uppercase font-black tracking-widest">
+            </div>
+            <div class="glass-card rounded-[40px] overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5 text-[9px] font-black uppercase text-gray-500 tracking-widest">
+                        <tr><th class="px-8 py-6">Identity</th><th class="px-8 py-6">Vault History</th><th class="px-8 py-6">Status</th><th class="px-8 py-6 text-right">Action</th></tr>
+                    </thead>
+                    <tbody id="user-master-list" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="section-inventory" class="tab-content hidden space-y-10">
+            <div class="px-2">
+                <h1 class="text-3xl font-black italic uppercase leading-none">Inventory & Pass</h1>
+            </div>
+
+            <div class="glass-card p-6 rounded-[35px] border border-red-500/20 mb-8">
+                <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+                    Weekly Pass Synchronizer
+                </h3>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="text" id="input-manual-pass" placeholder="Manual Pass (Optional)..." class="flex-grow bg-black/40 border border-white/10 rounded-2xl px-5 py-3 text-xs text-white uppercase font-mono">
+                    <button onclick="saveManualPass()" class="bg-purple-600 hover:bg-purple-500 text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase transition active-scale shadow-lg">Sync Pass System</button>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-[40px] overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5 text-[9px] font-black uppercase text-gray-500 tracking-widest">
+                        <tr><th class="px-8 py-6">Game Info</th><th class="px-8 py-6">Current Pass</th><th class="px-8 py-6">Category</th><th class="px-8 py-6 text-right">Action</th></tr>
+                    </thead>
+                    <tbody id="inventory-list" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="history-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-md" onclick="closeHistory()"></div>
+        <div class="relative glass-card p-8 rounded-[40px] max-w-3xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
+            <h3 id="history-title" class="text-xl font-black uppercase italic mb-2 text-purple-400 text-left">User Records</h3>
+            <div id="history-content" class="space-y-4"></div>
+            <button onclick="closeHistory()" class="w-full mt-10 py-4 bg-white/5 rounded-2xl font-black text-[10px] uppercase transition-all">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const SB_URL = 'https://meruqlvbymsaeaxybxaz.supabase.co';
+        const SB_KEY = 'sb_publishable_JpMK5MzO-awEkOOvr7t-xg_bBkobHLf';
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        let allUsersMaster = [];
+
+        async function checkAuth() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            const whitelist = ['raflyalfazari622@gmail.com', 'fadhilakbar050@gmail.com'];
+            if (!user || !whitelist.includes(user.email)) window.location.replace("index.html");
+            else { document.body.style.opacity = 1; initAdmin(); }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`section-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            if(tab === 'inventory') fetchInventory();
+            if(tab === 'users') fetchMasterUsers();
+        }
+
+        function getWeeklyAutoPass() {
+            const now = new Date();
+            const oneJan = new Date(now.getFullYear(), 0, 1);
+            const weekNumber = Math.ceil((((now - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
+            return `GV-${now.getFullYear()}-W${weekNumber}`;
+        }
+
+        async function saveManualPass() {
+            const val = document.getElementById('input-manual-pass').value.trim();
+            await _supabase.from('app_settings').upsert({ key: 'manual_weekly_pass', value: val || null });
+            alert("Pass System Updated!");
+            fetchInventory();
+        }
+
+        async function fetchMasterUsers() {
+            try {
+                const { data: users, error } = await _supabase.from('profiles').select('*');
+                if (error) throw error;
+                const { data: libData } = await _supabase.from('library').select('user_id, status');
+                allUsersMaster = users.map(u => ({
+                    ...u,
+                    approved_count: (libData || []).filter(l => l.user_id === u.id && l.status === 'approved').length
+                }));
+                renderUserTable(allUsersMaster);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderUserTable(data) {
+            const list = document.getElementById('user-master-list');
+            list.innerHTML = data.map(u => `
+                <tr class="${u.is_banned ? 'opacity-30' : ''}">
+                    <td class="px-8 py-5 text-left">
+                        <p class="text-xs font-bold uppercase text-white leading-none">${u.full_name || u.email || 'Anonymous'}</p>
+                        <p class="text-[8px] font-mono text-gray-600 mt-2">${u.id}</p>
+                    </td>
+                    <td class="px-8 py-5 text-left">
+                        <button onclick="showUserHistory('${u.id}', '${u.full_name || u.id}')" class="text-purple-400 font-black text-[10px] uppercase underline decoration-purple-500/20">${u.approved_count || 0} Games</button>
+                    </td>
+                    <td class="px-8 py-5 text-left"><span class="px-3 py-1 rounded-full text-[8px] font-black uppercase ${u.is_banned ? 'bg-red-500/20 text-red-500' : 'bg-green-500/20 text-green-500'}">${u.is_banned ? 'Banned' : 'Active'}</span></td>
+                    <td class="px-8 py-5 text-right"><button onclick="toggleBan('${u.id}', ${u.is_banned})" class="text-[9px] font-black uppercase underline ${u.is_banned ? 'text-green-400' : 'text-red-500'} transition-all">${u.is_banned ? 'Unban' : 'Ban'}</button></td>
+                </tr>`).join('');
+        }
+
+        window.showUserHistory = async (uid, name) => {
+            const content = document.getElementById('history-content');
+            content.innerHTML = '<p class="text-center py-10 opacity-30 text-[10px] animate-pulse">Syncing Library...</p>';
+            const { data: history } = await _supabase.from('library').select('*, games(title)').eq('user_id', uid).order('created_at', { ascending: false });
+            content.innerHTML = (!history || history.length === 0) ? '<p class="text-center opacity-30 py-10 uppercase text-[10px]">No records</p>' : history.map(h => `
+                <div class="glass-card p-5 rounded-[30px] border border-white/5 flex items-center justify-between gap-5 text-left">
+                    <div class="flex items-center gap-5">
+                        <div class="w-16 h-16 rounded-2xl bg-black overflow-hidden border border-white/10 flex-shrink-0">
+                            ${h.proof_url ? `<img src="${h.proof_url}" class="w-full h-full object-cover cursor-zoom-in" onclick="window.open('${h.proof_url}','_blank')">` : `<div class="w-full h-full flex items-center justify-center text-[7px] text-gray-700">NO IMG</div>`}
+                        </div>
+                        <div>
+                            <p class="font-black uppercase text-xs text-white">${h.games?.title || 'Unknown Product'}</p>
+                            <p class="text-[8px] opacity-40 uppercase">${new Date(h.created_at).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-[8px] font-black uppercase border border-white/5 px-3 py-1.5 rounded-xl ${h.status === 'approved' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}">${h.status}</span>
+                        <button onclick="deletePurchase('${h.id}', '${uid}', '${name}')" class="text-red-500 text-[10px] font-black uppercase hover:underline">Revoke</button>
+                    </div>
+                </div>`).join('');
+            document.getElementById('history-modal').classList.remove('hidden'); document.getElementById('history-modal').classList.add('flex');
+        };
+
+        window.deletePurchase = async (id, uid, name) => {
+            if(confirm("Confirm Revoke?")) {
+                await _supabase.from('library').delete().eq('id', id);
+                showUserHistory(uid, name); fetchMasterUsers();
+            }
+        };
+
+        window.toggleBan = async (uid, status) => {
+            if(confirm(status ? "Restore user?" : "BAN USER?")) {
+                await _supabase.from('profiles').update({ is_banned: !status }).eq('id', uid);
+                fetchMasterUsers();
+            }
+        };
+
+        async function fetchInventory() {
+            const [gamesRes, settingsRes] = await Promise.all([
+                _supabase.from('games').select('*').order('created_at', { ascending: false }),
+                _supabase.from('app_settings').select('value').eq('key', 'manual_weekly_pass').maybeSingle()
+            ]);
+            const currentPass = settingsRes.data?.value || getWeeklyAutoPass();
+            document.getElementById('inventory-list').innerHTML = (gamesRes.data || []).map(g => `
+                <tr class="hover:bg-white/[0.02] transition border-b border-white/5">
+                    <td class="px-8 py-5 flex items-center gap-4 text-left">
+                        <img src="${g.thumbnail}" class="w-12 h-12 rounded-xl object-cover border border-white/10 shadow-lg">
+                        <p class="text-xs font-black uppercase text-white leading-none">${g.title}</p>
+                    </td>
+                    <td class="px-8 py-5 text-left"><span class="text-[9px] text-green-400 font-mono font-bold bg-green-400/10 px-2 py-0.5 rounded-md border border-green-400/20">${currentPass}</span></td>
+                    <td class="px-8 py-5 text-left text-[9px] font-black text-blue-400 uppercase tracking-widest">${g.genre}</td>
+                    <td class="px-8 py-5 text-right space-x-3">
+                        <button onclick="editItem('${g.id}')" class="text-blue-400 font-black text-[9px] uppercase hover:text-white transition">Edit</button>
+                        <button onclick="deleteItem('${g.id}')" class="text-red-500 font-black text-[9px] uppercase hover:text-white transition">Del</button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        async function deleteItem(id) {
+            if(confirm("Delete product permanently?")) { await _supabase.from('games').delete().eq('id', id); fetchInventory(); }
+        }
+
+        function resetForm() {
+            document.getElementById('master-upload-form').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('form-title').innerText = "Vault Uploader";
+            document.getElementById('main-upload-btn').innerText = "Push to Database";
+            const rows = document.querySelectorAll('.link-row');
+            rows.forEach(row => {
+                row.querySelector('select').value = 'box';
+                row.querySelector('input[type="text"]').value = '';
+                row.querySelector('input[type="url"]').value = '';
+            });
+        }
+
+        document.getElementById('master-upload-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('main-upload-btn');
+            const editId = document.getElementById('edit-id').value;
+            btn.innerText = "WAITING SYNC..."; btn.disabled = true;
+
+            const links = [];
+            document.querySelectorAll('.link-row').forEach(row => {
+                const url = row.querySelector('input[type="url"]').value.trim();
+                const label = row.querySelector('input[type="text"]').value.trim();
+                const icon = row.querySelector('select').value;
+                if(url) links.push({ icon, label: label || "Download", url });
+            });
+
+            const payload = {
+                title: document.getElementById('title').value,
+                genre: document.getElementById('genre').value,
+                connectivity_type: document.getElementById('connectivity_type').value,
+                price: parseFloat(document.getElementById('price').value),
+                discount_price: parseFloat(document.getElementById('discount_price').value) || 0,
+                is_trending: document.getElementById('is_trending').checked,
+                thumbnail: document.getElementById('thumbnail').value,
+                description: document.getElementById('description').value,
+                download_links: links,
+                specifications: {
+                    minimum: { 
+                        os: document.getElementById('min_os').value, 
+                        cpu: document.getElementById('min_cpu').value, 
+                        ram: document.getElementById('min_ram').value, 
+                        gpu: document.getElementById('min_gpu').value 
+                    },
+                    recommended: { 
+                        os: document.getElementById('rec_os').value, 
+                        cpu: document.getElementById('rec_cpu').value, 
+                        ram: document.getElementById('rec_ram').value, 
+                        gpu: document.getElementById('rec_gpu').value 
+                    }
+                }
+            };
+
+            const { error } = editId ? await _supabase.from('games').update(payload).eq('id', editId) : await _supabase.from('games').insert([payload]);
+            if(error) alert(error.message); 
+            else { alert("Vault Synchronized!"); resetForm(); switchTab('inventory'); }
+            btn.disabled = false;
+        };
+
+        async function editItem(id) {
+            const { data: g } = await _supabase.from('games').select('*').eq('id', id).single();
+            if(!g) return;
+            document.getElementById('edit-id').value = g.id;
+            document.getElementById('title').value = g.title;
+            document.getElementById('genre').value = g.genre;
+            document.getElementById('price').value = g.price;
+            document.getElementById('discount_price').value = g.discount_price || 0;
+            document.getElementById('thumbnail').value = g.thumbnail;
+            document.getElementById('description').value = g.description;
+            document.getElementById('is_trending').checked = g.is_trending;
+            document.getElementById('connectivity_type').value = g.connectivity_type || 'Offline';
+
+            // Specs
+            document.getElementById('min_os').value = g.specifications?.minimum?.os || '';
+            document.getElementById('min_cpu').value = g.specifications?.minimum?.cpu || '';
+            document.getElementById('min_ram').value = g.specifications?.minimum?.ram || '';
+            document.getElementById('min_gpu').value = g.specifications?.minimum?.gpu || '';
+            document.getElementById('rec_os').value = g.specifications?.recommended?.os || '';
+            document.getElementById('rec_cpu').value = g.specifications?.recommended?.cpu || '';
+            document.getElementById('rec_ram').value = g.specifications?.recommended?.ram || '';
+            document.getElementById('rec_gpu').value = g.specifications?.recommended?.gpu || '';
+            
+            // Links Sync
+            const linkRows = document.querySelectorAll('.link-row');
+            linkRows.forEach(row => {
+                row.querySelector('select').value = 'box';
+                row.querySelector('input[type="text"]').value = '';
+                row.querySelector('input[type="url"]').value = '';
+            });
+
+            if(g.download_links && Array.isArray(g.download_links)) {
+                g.download_links.forEach((link, i) => {
+                    if(linkRows[i]) {
+                        linkRows[i].querySelector('select').value = link.icon || 'box';
+                        linkRows[i].querySelector('input[type="text"]').value = link.label || '';
+                        linkRows[i].querySelector('input[type="url"]').value = link.url || '';
+                    }
+                });
+            }
+
+            switchTab('upload');
+            document.getElementById('form-title').innerText = "Edit: " + g.title;
+            document.getElementById('main-upload-btn').innerText = "Update Vault Record";
+        }
+
+        function initAdmin() {
+            const wrapper = document.getElementById('links-wrapper');
+            wrapper.innerHTML = '';
+            for(let i=0; i<5; i++) {
+                const div = document.createElement('div');
+                div.className = "link-row grid grid-cols-12 gap-2 bg-black/20 p-2 rounded-2xl mb-2 border border-white/5";
+                div.innerHTML = `
+                    <select class="col-span-3 rounded-xl py-3 text-[8px] font-bold uppercase">
+                        <option value="box">📦 File</option>
+                        <option value="tool">🛠️ Tool</option>
+                        <option value="fix">🔧 Fix</option>
+                        <option value="book">📖 Guide</option>
+                    </select>
+                    <input type="text" placeholder="Label" class="col-span-3 rounded-xl px-3 py-3 text-[9px] uppercase">
+                    <input type="url" placeholder="URL" class="col-span-6 rounded-xl px-3 py-3 text-[9px]">`;
+                wrapper.appendChild(div);
+            }
+            _supabase.from('app_settings').select('value').eq('key', 'manual_weekly_pass').maybeSingle().then(r => {
+                if(r.data) document.getElementById('input-manual-pass').value = r.data.value;
+            });
+            fetchInventory(); fetchMasterUsers();
+        }
+
+        document.getElementById('search-user-input')?.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase().trim();
+            renderUserTable(allUsersMaster.filter(u => (u.full_name || '').toLowerCase().includes(val) || u.id.toLowerCase().includes(val)));
+        });
+
+        window.closeHistory = () => document.getElementById('history-modal').classList.add('hidden');
+        checkAuth();
+    </script>
+</body>
+</html>

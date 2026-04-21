@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Join Vault | Gamevora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #050505; 
+            color: white; 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+
+        input { 
+            background: rgba(255, 255, 255, 0.03) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            transition: all 0.3s; 
+            color: white; 
+        }
+
+        input:focus { 
+            border-color: #9333ea !important; 
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.15); 
+            outline: none; 
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* Stop iOS Auto-zoom */
+        @media (max-width: 768px) {
+            input { font-size: 16px !important; }
+            .glass-card { border-radius: 35px; }
+        }
+
+        .text-gradient { 
+            background: linear-gradient(to right, #a855f7, #60a5fa); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+    </style>
+</head>
+<body class="p-6 selection:bg-purple-500">
+
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-600/10 blur-[100px] md:blur-[150px] -z-10 animate-pulse"></div>
+
+    <div class="w-full max-w-md space-y-8 relative z-50">
+        <div class="text-center space-y-2">
+            <h1 class="text-4xl font-black italic tracking-tighter text-gradient uppercase">GAMEVORA</h1>
+            <p class="text-gray-500 text-[9px] font-black uppercase tracking-[0.3em] opacity-80">Create your digital vault account</p>
+        </div>
+
+        <div class="glass-card p-8 md:p-10 rounded-[45px] shadow-2xl">
+            <form id="register-form" class="space-y-5">
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Full Name</label>
+                    <input type="text" id="fullname" placeholder="Enter your name" class="w-full px-6 py-4 rounded-[20px] text-sm outline-none font-medium" required>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Email Address</label>
+                    <input type="email" id="email" placeholder="name@example.com" class="w-full px-6 py-4 rounded-[20px] text-sm outline-none font-medium" required>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Security Password</label>
+                    <input type="password" id="password" placeholder="••••••••" class="w-full px-6 py-4 rounded-[20px] text-sm outline-none font-medium" required>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" id="register-btn" class="w-full bg-white text-black py-4 md:py-5 rounded-[22px] font-black text-[11px] uppercase tracking-[0.2em] hover:bg-purple-600 hover:text-white transition-all active:scale-95 shadow-2xl shadow-purple-500/10">
+                        Register Account
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-10 text-center">
+                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">
+                    Already have an account? 
+                    <a href="login.html" class="text-purple-400 hover:text-white transition underline underline-offset-4 ml-1">Log In</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="index.html" class="text-[9px] font-black text-gray-700 hover:text-gray-400 uppercase tracking-[0.4em] transition">← Back to Store</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://meruqlvbymsaeaxybxaz.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_JpMK5MzO-awEkOOvr7t-xg_bBkobHLf'; 
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const registerForm = document.getElementById('register-form');
+        const registerBtn = document.getElementById('register-btn');
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Loading State
+            registerBtn.innerText = "AUTHENTICATING...";
+            registerBtn.disabled = true;
+
+            try {
+                // 1. Sign Up ke Supabase Auth
+                const { data, error } = await _supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            role: 'user' 
+                        }
+                    }
+                });
+
+                if (error) throw error;
+
+                // 2. Simpan ke Tabel Profiles
+                if (data.user) {
+                    await _supabase
+                        .from('profiles')
+                        .insert([
+                            { 
+                                id: data.user.id, 
+                                full_name: fullName, 
+                                role: 'user',
+                                email: email 
+                            }
+                        ]);
+                }
+
+                alert("Registrasi Berhasil! Silakan cek email kamu untuk konfirmasi atau langsung ke halaman Login.");
+                window.location.href = "login.html";
+
+            } catch (err) {
+                console.error("Error:", err.message);
+                alert("Gagal Daftar: " + err.message);
+                
+                // Reset Button
+                registerBtn.innerText = "REGISTER ACCOUNT";
+                registerBtn.disabled = false;
+            }
+        });
+
+        // Redirect if already logged in
+        async function checkSession() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (user) window.location.href = "index.html";
+        }
+        checkSession();
+    </script>
+</body>
+</html>
