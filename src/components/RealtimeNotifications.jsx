@@ -31,9 +31,6 @@ export default function RealtimeNotifications() {
   useEffect(() => {
     if (!profile?.id) return
 
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission()
-    }
 
     const channels = []
 

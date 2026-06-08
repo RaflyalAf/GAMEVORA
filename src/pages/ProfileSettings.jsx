@@ -70,10 +70,24 @@ export default function ProfileSettings() {
     if (!newPass || newPass !== confirmPass) return alert('Passwords do not match!')
     if (newPass.length < 6) return alert('Password too weak!')
     const { error } = await supabase.auth.updateUser({ password: newPass })
-    if (error) return alert(error.message)
-    alert('Security Key Updated!')
-    setNewPass('')
-    setConfirmPass('')
+    if (error) alert('Error: ' + error.message)
+    else {
+      alert('Password updated successfully!')
+      setNewPass('')
+      setConfirmPass('')
+    }
+  }
+
+  const requestNotificationPermission = () => {
+    if (!('Notification' in window)) return alert('Browser kamu tidak mendukung fitur notifikasi.')
+    
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        alert('Notifikasi berhasil dinyalakan! 🎉')
+      } else {
+        alert('Izin notifikasi ditolak. Jika kamu menggunakan iOS (iPhone), pastikan kamu sudah melakukan "Add to Home Screen" melalui menu Share di Safari, lalu coba lagi dari aplikasi yang muncul di layar utamamu.')
+      }
+    })
   }
 
   return (
@@ -163,6 +177,27 @@ export default function ProfileSettings() {
               <button onClick={updatePassword}
                 className="w-full bg-gradient-to-r from-white to-gray-100 text-black py-4 rounded-[22px] font-black text-[11px] uppercase tracking-widest active-scale hover:from-purple-600 hover:to-purple-500 hover:text-white transition-all duration-300">
                 Update Password
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+          <div className="glass-card-premium p-8 rounded-[40px] space-y-6">
+            <h3 className="text-lg font-black uppercase italic tracking-tighter flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+              Notifications
+            </h3>
+            <div className="bg-white/[0.02] border border-blue-500/10 p-5 rounded-2xl">
+              <p className="text-[10px] text-gray-400 font-bold leading-relaxed mb-4">
+                Terima pemberitahuan real-time untuk update game baru, broadcast admin, dan persetujuan pesanan.
+                <br /><br />
+                <span className="text-blue-400">Penting untuk iOS/iPhone:</span> Kamu wajib menekan tombol <b>Share</b> di bawah layar Safari dan pilih <b>Add to Home Screen</b> terlebih dahulu.
+              </p>
+              <button onClick={requestNotificationPermission}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-[20px] font-black text-[10px] uppercase tracking-widest active-scale hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                Nyalakan Notifikasi
               </button>
             </div>
           </div>
