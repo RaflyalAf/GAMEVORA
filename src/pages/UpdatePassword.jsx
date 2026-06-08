@@ -10,7 +10,11 @@ export default function UpdatePassword() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) navigate('/login')
+      // Jangan langsung redirect jika ada parameter code atau hash recovery dari email
+      const isRecovering = window.location.hash.includes('type=recovery') || window.location.search.includes('code=')
+      if (!session && !isRecovering) {
+        navigate('/login')
+      }
     })
   }, [navigate])
 
