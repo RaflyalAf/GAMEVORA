@@ -89,6 +89,15 @@ export default function Store() {
 
   useEffect(() => {
     fetchGames(search)
+    
+    const channel = supabase.channel('store_games_page')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'games' }, () => {
+        fetchGames(search)
+        loadFeatured()
+      })
+      .subscribe()
+      
+    return () => supabase.removeChannel(channel)
   }, [fetchGames, search])
 
   useEffect(() => {

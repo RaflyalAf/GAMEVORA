@@ -14,9 +14,22 @@ export default function ProfileOrders() {
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
-    supabase.from('library').select('*, games(title)').eq('user_id', user.id).order('created_at', { ascending: false }).then(({ data }) => {
-      setOrders(data || [])
-    })
+    
+    const fetchOrders = () => {
+      supabase.from('library').select('*, games(title)').eq('user_id', user.id).order('created_at', { ascending: false }).then(({ data }) => {
+        setOrders(data || [])
+      })
+    }
+    
+    fetchOrders()
+    
+    const channel = supabase.channel('profile_orders_page_' + user.id)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'library', filter: 'user_id=eq.' + user.id }, fetchOrders)
+      .subscribe()
+      
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [user])
 
   const cetakStruk = (order) => {

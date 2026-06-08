@@ -60,7 +60,20 @@ export default function Admin() {
     const ordersChannel = supabase.channel('admin_orders')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'library' }, fetchPendingOrders)
       .subscribe()
-    return () => { clearInterval(chatInterval); supabase.removeChannel(chatChannel); supabase.removeChannel(ordersChannel) }
+    const requestsChannel = supabase.channel('admin_requests')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'game_requests' }, fetchRequests)
+      .subscribe()
+    const usersChannel = supabase.channel('admin_users')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, fetchUsers)
+      .subscribe()
+      
+    return () => { 
+      clearInterval(chatInterval)
+      supabase.removeChannel(chatChannel)
+      supabase.removeChannel(ordersChannel)
+      supabase.removeChannel(requestsChannel)
+      supabase.removeChannel(usersChannel)
+    }
   }, [])
 
   async function fetchGames() {

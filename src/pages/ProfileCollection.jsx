@@ -16,9 +16,19 @@ export default function ProfileCollection() {
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
-    supabase.from('library').select('*, games(*)').eq('user_id', user.id).eq('status', 'approved').then(({ data }) => {
-      setLibrary(data || [])
-    })
+    
+    const fetchLibrary = () => {
+      supabase.from('library').select('*, games(*)').eq('user_id', user.id).eq('status', 'approved').then(({ data }) => {
+        setLibrary(data || [])
+      })
+    }
+    fetchLibrary()
+    
+    const channel = supabase.channel('profile_collection_page_' + user.id)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'library', filter: 'user_id=eq.' + user.id }, fetchLibrary)
+      .subscribe()
+      
+    return () => supabase.removeChannel(channel)
   }, [user])
 
   const showTutorial = async (gameId) => {
