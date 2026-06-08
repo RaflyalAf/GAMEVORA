@@ -12,6 +12,7 @@ export default function BottomNav() {
     { to: '/store', label: 'Store', icon: 'M16 11V7a4 4 0 10-8 0v4M5 9h14l1 12H4L5 9z', fill: false },
     { to: '/faq', label: 'FAQ', icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z', fill: false },
     { to: '/request', label: 'Request', icon: 'M12 4v16m8-8H4', fill: false },
+    { to: '/giveaways', label: 'Giveaway', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7', fill: false },
     ...(isAdmin ? [{ to: '/admin', label: 'Master', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', fill: false, isRed: true }] : []),
     { to: '/dashboard', label: 'Vault', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', fill: false },
   ]
