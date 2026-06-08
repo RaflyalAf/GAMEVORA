@@ -10,13 +10,11 @@ export default function UpdatePassword() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      // Jangan langsung redirect jika ada parameter code atau hash recovery dari email
-      const isRecovering = window.location.hash.includes('type=recovery') || window.location.search.includes('code=')
-      if (!session && !isRecovering) {
-        navigate('/login')
-      }
+      // Supabase sets the session automatically from the recovery link
+      // If we redirect too fast, the user might get kicked out.
+      // So we rely on the submit function to catch any errors if they aren't authenticated.
     })
-  }, [navigate])
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
