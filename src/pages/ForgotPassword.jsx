@@ -65,7 +65,7 @@ export default function ForgotPassword() {
           <div className="section-divider w-16 mx-auto mt-4 mb-4" />
           <p className="text-gray-600 text-[9px] uppercase tracking-[0.3em] font-black">
             {step === 1 && 'Recover your security key'}
-            {step === 2 && 'Enter 6-digit recovery code'}
+            {step === 2 && 'Enter recovery code'}
             {step === 3 && 'Set your new password'}
           </p>
         </div>
@@ -89,11 +89,11 @@ export default function ForgotPassword() {
           {step === 2 && (
             <form onSubmit={handleVerifyOtp} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-2">6-Digit OTP Code</label>
-                <input type="text" value={otp} onChange={e => setOtp(e.target.value)} maxLength={6}
+                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-2">Kode OTP Anda</label>
+                <input type="text" value={otp} onChange={e => setOtp(e.target.value)} maxLength={8}
                   className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-center text-2xl tracking-[0.5em] font-black text-white"
-                  placeholder="------" required />
-                <p className="text-[10px] text-gray-500 text-center mt-2">Cek email Anda untuk kode OTP 6 angka</p>
+                  placeholder="--------" required />
+                <p className="text-[10px] text-gray-500 text-center mt-2">Cek email Anda untuk kode OTP yang dikirimkan</p>
               </div>
               <button type="submit" disabled={loading}
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-black py-4 rounded-[22px] hover:opacity-80 transition-all duration-300 disabled:opacity-50 text-[11px] tracking-[0.2em] uppercase">
