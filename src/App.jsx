@@ -21,9 +21,21 @@ import FAQ from './pages/FAQ'
 import Request from './pages/Request'
 import Admin from './pages/Admin'
 
+import { useEffect } from 'react'
+import { useDeviceOS } from './hooks/useDeviceOS'
+
+function OSProvider({ children }) {
+  const os = useDeviceOS()
+  useEffect(() => {
+    document.body.className = `os-${os}`
+  }, [os])
+  return children
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <OSProvider>
       <AuthProvider>
         <CartProvider>
           <ProfilePromptModal />
@@ -48,6 +60,7 @@ export default function App() {
           </Routes>
         </CartProvider>
       </AuthProvider>
+      </OSProvider>
     </BrowserRouter>
   )
 }

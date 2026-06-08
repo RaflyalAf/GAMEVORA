@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./os_styles.css";
 
 :root {
   --sat: env(safe-area-inset-top);
