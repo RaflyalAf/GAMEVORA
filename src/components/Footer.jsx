@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16 text-center md:text-left">
           <div className="md:col-span-2">
-            <h3 className="text-2xl font-black italic uppercase tracking-tighter text-gradient mb-4">GAMEVORA</h3>
+            <h3 className="text-2xl font-black italic uppercase tracking-tighter text-gradient mb-4">GVR</h3>
             <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest leading-relaxed max-w-sm mx-auto md:mx-0">
               Terminal cerdas untuk pengalaman gaming tanpa batas. Temukan, mainkan, dan kuasai game favorit Anda di GameVora.
             </p>

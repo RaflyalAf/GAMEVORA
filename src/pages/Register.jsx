@@ -46,7 +46,7 @@ export default function Register() {
 
       <div className="w-full max-w-[420px] animate-fade-in relative">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-black italic tracking-tighter text-gradient uppercase">GAMEVORA</h1>
+          <h1 className="text-4xl font-black italic tracking-tighter text-gradient uppercase">GVR</h1>
           <div className="section-divider w-16 mx-auto mt-4 mb-4" />
           <p className="text-gray-600 text-[9px] uppercase tracking-[0.3em] font-black">Create your digital vault account</p>
         </div>

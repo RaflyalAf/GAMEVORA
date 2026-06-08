@@ -97,7 +97,7 @@ export default function ProfileOrders() {
         <body>
           <div class="receipt">
             <div class="header">
-              <h1>GAMEVORA</h1>
+              <h1>GVR</h1>
               <p>Vault Digital Receipt</p>
             </div>
             <div class="row label">

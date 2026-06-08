@@ -20,7 +20,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between w-full">
         <div className="flex items-center gap-8 text-left">
           <Link to="/" className="text-2xl font-black italic tracking-tighter text-gradient uppercase leading-none hover:opacity-80 transition-opacity">
-            GAMEVORA
+            GVR
           </Link>
           <div className="hidden md:flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.2em]">
             {navLinks.map(link => {
