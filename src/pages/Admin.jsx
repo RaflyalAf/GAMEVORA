@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import { formatRupiah } from '../lib/utils'
 import Navbar from '../components/Navbar'
@@ -25,6 +26,10 @@ export default function Admin() {
   const [broadcastTitle, setBroadcastTitle] = useState('')
   const [broadcastMessage, setBroadcastMessage] = useState('')
   const [broadcastType, setBroadcastType] = useState('info')
+
+  const [searchGames, setSearchGames] = useState('')
+  const [searchUsers, setSearchUsers] = useState('')
+  const [searchRequests, setSearchRequests] = useState('')
 
   const [editId, setEditId] = useState('')
   const [uploadingZip, setUploadingZip] = useState(false)
@@ -372,14 +377,26 @@ export default function Admin() {
           ))}
         </div>
 
-        {activeTab === 'dashboard' && (
-          <div>
-            <div className="flex justify-between items-center mb-8">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+          >
+            {activeTab === 'dashboard' && (
+              <div>
+                <div className="flex justify-between items-center mb-8">
               <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{games.length} Games</p>
               <button onClick={newGame} className="bg-gradient-to-r from-purple-600 to-purple-500 px-8 py-4 rounded-[22px] text-[10px] font-black uppercase active-scale shadow-xl hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all duration-300">+ New Game</button>
             </div>
+            <div className="mb-6">
+              <input type="text" placeholder="Cari Game..." value={searchGames} onChange={e => setSearchGames(e.target.value)}
+                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700" />
+            </div>
             <div className="grid grid-cols-1 gap-4">
-              {games.map(g => (
+              {games.filter(g => g.title.toLowerCase().includes(searchGames.toLowerCase())).map(g => (
                 <div key={g.id} className="glass-card p-6 rounded-[30px] flex items-center justify-between hover:border-purple-500/20 transition-all duration-300">
                   <div className="flex items-center gap-4">
                     <img src={g.thumbnail} className="w-16 h-16 rounded-2xl object-cover border border-white/10" alt={g.title} />
@@ -586,6 +603,10 @@ export default function Admin() {
                 {requests.length} requests
               </span>
             </div>
+            <div className="mb-6">
+              <input type="text" placeholder="Cari Request (Judul Game / Email)..." value={searchRequests} onChange={e => setSearchRequests(e.target.value)}
+                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700" />
+            </div>
             {requests.length === 0 ? (
               <p className="text-center py-10 opacity-30 text-[10px] font-black uppercase italic">No game requests yet</p>
             ) : (
@@ -600,7 +621,7 @@ export default function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {requests.map(r => (
+                    {requests.filter(r => (r.game_title||'').toLowerCase().includes(searchRequests.toLowerCase()) || (r.user_email||'').toLowerCase().includes(searchRequests.toLowerCase())).map(r => (
                       <tr key={r.id} className="hover:bg-white/[0.01] transition-all border-b border-white/[0.02]">
                         <td className="py-5 px-2 font-mono text-[9px] text-gray-500 uppercase tracking-tighter max-w-[120px] truncate">{r.user_email || '-'}</td>
                         <td className="py-5 px-2 text-[10px] font-black uppercase">{r.game_title || '-'}</td>
@@ -811,6 +832,10 @@ export default function Admin() {
                 {users.length} total
               </span>
             </div>
+            <div className="mb-6">
+              <input type="text" placeholder="Cari User (Nama / Email)..." value={searchUsers} onChange={e => setSearchUsers(e.target.value)}
+                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700" />
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
@@ -830,7 +855,7 @@ export default function Admin() {
                   {users.length === 0 ? (
                     <tr><td colSpan="9" className="py-10 text-center opacity-20 text-[10px] font-black uppercase italic tracking-widest">No users found</td></tr>
                   ) : (
-                    users.map(u => (
+                    users.filter(u => (u.full_name||'').toLowerCase().includes(searchUsers.toLowerCase()) || (u.email||'').toLowerCase().includes(searchUsers.toLowerCase())).map(u => (
                       <tr key={u.id} className="hover:bg-white/[0.01] transition-all border-b border-white/[0.02]">
                         <td className="py-4 px-2">
                           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 overflow-hidden border border-white/10">
@@ -929,6 +954,8 @@ export default function Admin() {
             </div>
           </div>
         )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {proofPreview && (
