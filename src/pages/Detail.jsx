@@ -202,7 +202,7 @@ export default function Detail() {
       <Navbar />
       <BottomNav />
 
-      <main className="max-w-7xl mx-auto pt-28 pb-40 px-6 relative">
+      <main className="max-w-7xl mx-auto pt-28 pb-48 px-6 relative">
         <div className="flex items-center gap-3 mb-8 text-[8px] font-black uppercase tracking-widest text-gray-600 animate-fade-in">
           <Link to="/" className="hover:text-purple-400 transition-colors">Home</Link>
           <span className="text-gray-800">/</span>
@@ -551,8 +551,8 @@ export default function Detail() {
       </main>
 
       {status !== 'approved' && status !== 'pending' && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-[2000]">
-          <div className="bg-gradient-to-t from-black/95 via-black/90 to-transparent px-6 pt-8 pb-[calc(1.5rem+var(--sab))]">
+        <div className="md:hidden fixed bottom-[calc(72px+var(--sab))] left-0 right-0 z-[2000]">
+          <div className="bg-gradient-to-t from-[#030303] via-[#030303]/95 to-transparent px-6 pt-12 pb-4">
             <div className="flex gap-4">
               <button onClick={() => addToCart(game.id)}
                 className="flex-1 bg-white/[0.05] backdrop-blur-2xl border border-white/[0.08] py-5 rounded-2xl font-black text-[11px] uppercase active-scale hover:bg-white/10 transition-all flex items-center justify-center gap-2">
