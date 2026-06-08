@@ -259,10 +259,10 @@ export default function Detail() {
                   </div>
                   <ul className="text-[11px] space-y-3 text-gray-300 font-medium">
                     {['os', 'cpu', 'ram', 'gpu'].map(s => (
-                      <li key={s} className="flex items-center gap-3">
-                        <span className="inline-block w-10 text-gray-600 uppercase text-[8px] font-black tracking-wider">{s}</span>
-                        <span className="w-2 h-[1px] bg-white/[0.06]" />
-                        <span>{game.specifications?.minimum?.[s] || '-'}</span>
+                      <li key={s} className="flex items-start md:items-center gap-3">
+                        <span className="inline-block w-10 shrink-0 text-gray-600 uppercase text-[8px] font-black tracking-wider pt-1 md:pt-0">{s}</span>
+                        <span className="w-2 h-[1px] bg-white/[0.06] shrink-0 mt-2 md:mt-0" />
+                        <span className="flex-1 break-words leading-tight">{game.specifications?.minimum?.[s] || '-'}</span>
                       </li>
                     ))}
                   </ul>
@@ -278,10 +278,10 @@ export default function Detail() {
                   </div>
                   <ul className="text-[11px] space-y-3 text-gray-300 font-medium">
                     {['os', 'cpu', 'ram', 'gpu'].map(s => (
-                      <li key={s} className="flex items-center gap-3">
-                        <span className="inline-block w-10 text-gray-600 uppercase text-[8px] font-black tracking-wider">{s}</span>
-                        <span className="w-2 h-[1px] bg-purple-500/10" />
-                        <span>{game.specifications?.recommended?.[s] || '-'}</span>
+                      <li key={s} className="flex items-start md:items-center gap-3">
+                        <span className="inline-block w-10 shrink-0 text-gray-600 uppercase text-[8px] font-black tracking-wider pt-1 md:pt-0">{s}</span>
+                        <span className="w-2 h-[1px] bg-purple-500/10 shrink-0 mt-2 md:mt-0" />
+                        <span className="flex-1 break-words leading-tight">{game.specifications?.recommended?.[s] || '-'}</span>
                       </li>
                     ))}
                   </ul>
@@ -303,7 +303,7 @@ export default function Detail() {
                     )}
                     <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">{game.connectivity_type}</span>
                   </div>
-                  <h1 className="font-black italic uppercase leading-none text-5xl md:text-7xl tracking-tighter">{game.title}</h1>
+                  <h1 className="font-black italic uppercase leading-none text-4xl sm:text-5xl md:text-7xl tracking-tighter break-words hyphens-auto">{game.title}</h1>
                 </div>
               </div>
 
@@ -354,13 +354,13 @@ export default function Detail() {
                         {game.download_links?.map((link, i) => (
                           <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
                             className="flex items-center justify-between p-6 bg-white/[0.03] border border-white/[0.06] rounded-3xl hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-500/5 hover:border-purple-500/30 transition-all duration-300 group active-scale">
-                            <div className="flex items-center gap-5">
-                              <div className="w-12 h-12 bg-purple-600/10 rounded-2xl flex items-center justify-center border border-purple-500/20 group-hover:bg-purple-600/20 transition-all">
+                            <div className="flex items-center gap-4 md:gap-5 min-w-0 flex-1">
+                              <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-purple-600/10 rounded-2xl flex items-center justify-center border border-purple-500/20 group-hover:bg-purple-600/20 transition-all">
                                 <span className="text-lg">{icons[link.icon] || 'Link'}</span>
                               </div>
-                              <div className="flex flex-col text-left">
-                                <span className="text-[7px] font-black uppercase text-gray-600 tracking-widest">Cloud Access</span>
-                                <span className="text-sm font-bold uppercase mt-0.5">{link.label}</span>
+                              <div className="flex flex-col text-left min-w-0 flex-1 pr-2">
+                                <span className="text-[7px] font-black uppercase text-gray-600 tracking-widest truncate">Cloud Access</span>
+                                <span className="text-xs md:text-sm font-bold uppercase mt-0.5 truncate">{link.label}</span>
                               </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -377,15 +377,15 @@ export default function Detail() {
                           <div className="flex flex-col gap-3">
                             <button onClick={handleAutoInstall}
                               className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-600/10 to-blue-600/10 border border-purple-500/30 rounded-3xl hover:from-purple-600/20 hover:to-blue-600/20 hover:border-purple-400/50 transition-all duration-300 group active-scale">
-                              <div className="flex items-center gap-5">
-                                <div className="w-12 h-12 bg-purple-600/20 rounded-2xl flex items-center justify-center border border-purple-500/30 group-hover:bg-purple-600/30 transition-all">
-                                  <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <div className="flex items-center gap-4 md:gap-5 min-w-0 flex-1">
+                                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-purple-600/20 rounded-2xl flex items-center justify-center border border-purple-500/30 group-hover:bg-purple-600/30 transition-all">
+                                  <svg className="w-5 h-5 md:w-6 md:h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                   </svg>
                                 </div>
-                                <div className="flex flex-col text-left">
-                                  <span className="text-[7px] font-black uppercase text-purple-400 tracking-widest">VoraTools Auto Install</span>
-                                  <span className="text-sm font-bold uppercase mt-0.5 text-white">1-Click Install</span>
+                                <div className="flex flex-col text-left min-w-0 flex-1 pr-2">
+                                  <span className="text-[7px] font-black uppercase text-purple-400 tracking-widest truncate">VoraTools Auto Install</span>
+                                  <span className="text-xs md:text-sm font-bold uppercase mt-0.5 text-white truncate">1-Click Install</span>
                                 </div>
                               </div>
                               <div className="flex items-center gap-3">
@@ -416,7 +416,7 @@ export default function Detail() {
                             </div>
                             <span className="text-[9px] font-black text-yellow-500 uppercase tracking-[0.3em]">Installation Guide</span>
                           </div>
-                          <div className="text-[13px] text-gray-400 leading-relaxed whitespace-pre-line font-medium pl-8 border-l border-yellow-500/10">
+                          <div className="text-[13px] text-gray-400 leading-relaxed whitespace-pre-line font-medium pl-6 md:pl-8 border-l border-yellow-500/10 break-words">
                             {game.manual_guide}
                           </div>
                         </div>
