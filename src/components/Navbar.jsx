@@ -55,11 +55,22 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors">
-            <svg className="w-5 h-5 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </button>
+          <div className="relative group/notif">
+            <button className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors focus:outline-none">
+              <svg className="w-5 h-5 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </button>
+            <div className="absolute right-[-20px] sm:right-0 top-full mt-2 w-64 opacity-0 invisible group-hover/notif:opacity-100 group-hover/notif:visible transition-all duration-200 translate-y-1 group-hover/notif:translate-y-0 z-[6000]">
+              <div className="glass-card-premium rounded-3xl p-6 shadow-2xl border border-white/[0.08] text-center">
+                <div className="w-12 h-12 bg-purple-600/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+                  <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                </div>
+                <p className="text-[11px] font-black uppercase text-gray-300 tracking-widest mb-1.5">Zero Intel</p>
+                <p className="text-[9px] text-gray-500 uppercase tracking-wider font-bold">Belum ada notifikasi baru.</p>
+              </div>
+            </div>
+          </div>
           <button onClick={openCart} className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors">
             <svg className="w-5 h-5 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
