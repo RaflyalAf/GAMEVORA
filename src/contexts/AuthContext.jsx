@@ -24,6 +24,10 @@ export function AuthProvider({ children }) {
       setUser(session?.user ?? null)
       if (session?.user) fetchProfile(session.user.id, session.user.user_metadata)
       else { setProfile(null) }
+      
+      if (event === 'PASSWORD_RECOVERY') {
+        window.location.href = '/update-password'
+      }
     })
 
     return () => subscription?.unsubscribe()
