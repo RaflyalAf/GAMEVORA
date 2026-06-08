@@ -192,23 +192,29 @@ export default function Admin() {
     fetchChats()
   }
 
-  const sendBroadcast = () => {
+  const sendBroadcast = async () => {
     if (!broadcastTitle.trim() || !broadcastMessage.trim()) return
-    const channel = supabase.channel('announcements')
-    channel.subscribe((status) => {
-      if (status === 'SUBSCRIBED') {
-        channel.send({
-          type: 'broadcast',
-          event: 'announcement',
-          payload: { title: broadcastTitle.trim(), message: broadcastMessage.trim(), type: broadcastType },
-        })
-        setTimeout(() => supabase.removeChannel(channel), 2000)
-      }
-    })
+    
+    const payload = { title: broadcastTitle.trim(), message: broadcastMessage.trim(), type: broadcastType }
+    
+    const existingChannel = supabase.getChannels().find(c => c.topic === 'realtime:announcements')
+    
+    if (existingChannel) {
+      existingChannel.send({ type: 'broadcast', event: 'announcement', payload })
+    } else {
+      const channel = supabase.channel('announcements')
+      channel.subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          channel.send({ type: 'broadcast', event: 'announcement', payload })
+          setTimeout(() => supabase.removeChannel(channel), 2000)
+        }
+      })
+    }
+    
     setBroadcastTitle('')
     setBroadcastMessage('')
     setBroadcastType('info')
-    alert('Broadcast terkirim!')
+    alert('Broadcast terkirim ke semua user aktif!')
   }
 
   const viewUserOrders = async (userId, userName) => {

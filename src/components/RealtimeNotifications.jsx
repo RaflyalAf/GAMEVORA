@@ -87,7 +87,7 @@ export default function RealtimeNotifications() {
     )
 
     channels.push(
-      supabase.channel('announcements')
+      supabase.channel('announcements', { config: { broadcast: { self: true } } })
         .on('broadcast', { event: 'announcement' }, (payload) => {
           const p = payload.payload
           push(p.title, p.message)
