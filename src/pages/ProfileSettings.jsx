@@ -78,18 +78,55 @@ export default function ProfileSettings() {
     }
   }
 
-  const requestNotificationPermission = () => {
-    if (!('Notification' in window)) {
+  const requestNotificationPermission = async () => {
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
       return alert('🚨 Fitur Notifikasi Terkunci oleh Sistem!\n\nJika kamu menggunakan iPhone/iOS, Apple MENGHARUSKAN kamu menekan tombol "Share" (Bagikan) di Safari lalu memilih "Add to Home Screen".\n\nSilakan lakukan itu, lalu buka kembali GAMEVORA dari Layar Utama HP kamu untuk menyalakan notifikasi.')
     }
     
-    Notification.requestPermission().then(permission => {
+    try {
+      const permission = await Notification.requestPermission()
       if (permission === 'granted') {
-        alert('Notifikasi berhasil dinyalakan! 🎉')
+        const registration = await navigator.serviceWorker.register('/sw.js')
+        const VAPID_PUBLIC_KEY = 'BKN9gcHtQK7rhW0Er-NzizKLXomuPfBan-uDzwT-cCVIUeSdnlCyDxDY4P4cx5gjnslkDQvh495bv9ZcuEdtKqA'
+        
+        let subscription = await registration.pushManager.getSubscription()
+        if (!subscription) {
+          subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+          })
+        }
+        
+        const subJSON = subscription.toJSON()
+        
+        const { error } = await supabase.from('push_subscriptions').upsert({
+          user_id: user.id,
+          endpoint: subJSON.endpoint,
+          auth_key: subJSON.keys.auth,
+          p256dh_key: subJSON.keys.p256dh
+        }, { onConflict: 'endpoint' })
+        
+        if (error) throw error
+        
+        alert('Notifikasi Lockscreen berhasil diaktifkan! 🎉')
       } else {
         alert('Izin notifikasi ditolak. Jika kamu menggunakan iOS (iPhone), pastikan kamu sudah melakukan "Add to Home Screen" melalui menu Share di Safari, lalu coba lagi dari aplikasi yang muncul di layar utamamu.')
       }
-    })
+    } catch (e) {
+      console.error(e)
+      alert('Gagal mengaktifkan notifikasi: ' + e.message)
+    }
+  }
+
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4)
+    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
+    const rawData = window.atob(base64)
+    const outputArray = new Uint8Array(rawData.length)
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i)
+    }
+    return outputArray
   }
 
   return (

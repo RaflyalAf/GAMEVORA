@@ -197,8 +197,8 @@ export default function Admin() {
     
     const payload = { title: broadcastTitle.trim(), message: broadcastMessage.trim(), type: broadcastType }
     
+    // Send via WebSocket (In-App)
     const existingChannel = supabase.getChannels().find(c => c.topic === 'realtime:announcements')
-    
     if (existingChannel) {
       existingChannel.send({ type: 'broadcast', event: 'announcement', payload })
     } else {
@@ -210,11 +210,20 @@ export default function Admin() {
         }
       })
     }
+
+    // Send via Web Push (Lockscreen)
+    try {
+      await supabase.functions.invoke('send-push', {
+        body: { title: payload.title, message: payload.message }
+      })
+    } catch (e) {
+      console.error('Failed to trigger background push:', e)
+    }
     
     setBroadcastTitle('')
     setBroadcastMessage('')
     setBroadcastType('info')
-    alert('Broadcast terkirim ke semua user aktif!')
+    alert('Broadcast terkirim ke In-App dan Lockscreen!')
   }
 
   const viewUserOrders = async (userId, userName) => {
@@ -227,20 +236,34 @@ export default function Admin() {
   const approveOrder = async (order) => {
     if (!confirm(`Approve payment for "${order.item_name}"?`)) return
     await supabase.from('library').update({ status: 'approved' }).eq('id', order.id)
+    
+    const title = 'Payment Approved'
+    const message = `Pembayaran untuk ${order.item_name} telah diverifikasi. Game tersedia di vault Anda.`
+    
     await supabase.from('vault_notifications').insert([{
-      user_id: order.user_id, title: 'Payment Approved',
-      message: `Pembayaran untuk ${order.item_name} telah diverifikasi. Game tersedia di vault Anda.`
+      user_id: order.user_id, title, message
     }])
+    
+    // Background Push
+    supabase.functions.invoke('send-push', { body: { title, message, target_user_id: order.user_id } }).catch(console.error)
+    
     fetchPendingOrders()
   }
 
   const rejectOrder = async (order) => {
     if (!confirm(`Reject payment for "${order.item_name}"?`)) return
     await supabase.from('library').update({ status: 'rejected' }).eq('id', order.id)
+    
+    const title = 'Payment Rejected'
+    const message = `Pembayaran untuk ${order.item_name} ditolak. Silakan hubungi admin.`
+    
     await supabase.from('vault_notifications').insert([{
-      user_id: order.user_id, title: 'Payment Rejected',
-      message: `Pembayaran untuk ${order.item_name} ditolak. Silakan hubungi admin.`
+      user_id: order.user_id, title, message
     }])
+    
+    // Background Push
+    supabase.functions.invoke('send-push', { body: { title, message, target_user_id: order.user_id } }).catch(console.error)
+    
     fetchPendingOrders()
   }
 
