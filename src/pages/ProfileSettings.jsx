@@ -15,6 +15,7 @@ export default function ProfileSettings() {
   const [newPass, setNewPass] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
   const [saving, setSaving] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
@@ -41,6 +42,29 @@ export default function ProfileSettings() {
     }
     setSaving(false)
   }
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    if (file.size > 2 * 1024 * 1024) return alert('Maksimal ukuran foto adalah 2MB!')
+    
+    setUploadingAvatar(true)
+    const fileExt = file.name.split('.').pop()
+    const fileName = `avatars/${user.id}-${Date.now()}.${fileExt}`
+    
+    const { error: uploadError } = await supabase.storage.from('payments').upload(fileName, file)
+    
+    if (uploadError) {
+      alert('Gagal mengupload foto: ' + uploadError.message)
+      setUploadingAvatar(false)
+      return
+    }
+    
+    const { data } = supabase.storage.from('payments').getPublicUrl(fileName)
+    setAvatarUrl(data.publicUrl)
+    setUploadingAvatar(false)
+  }
+
 
   const updatePassword = async () => {
     if (!newPass || newPass !== confirmPass) return alert('Passwords do not match!')
@@ -87,11 +111,31 @@ export default function ProfileSettings() {
                   className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700" />
               </div>
               <div>
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Avatar URL</label>
-                <input type="url" value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)}
-                  className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700" />
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Avatar Profile</label>
+                <div className="flex flex-col sm:flex-row items-center gap-4 bg-white/[0.03] border border-white/[0.08] p-4 rounded-[20px]">
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500/30 bg-purple-600/10 shrink-0">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xl">👾</div>
+                    )}
+                  </div>
+                  <div className="flex-1 w-full relative">
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} disabled={uploadingAvatar}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                    <div className="flex items-center justify-center w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 hover:bg-white/[0.08] transition-all">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-300">
+                        {uploadingAvatar ? 'MENGUPLOAD...' : 'PILIH FOTO (MAKS 2MB)'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <input type="url" placeholder="Atau paste URL gambar..." value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)}
+                    className="w-full bg-white/[0.02] border border-white/[0.05] rounded-[15px] px-4 py-3 outline-none focus:border-purple-500/30 transition-all text-xs text-white placeholder:text-gray-700" />
+                </div>
               </div>
-              <button onClick={saveProfile} disabled={saving}
+              <button onClick={saveProfile} disabled={saving || uploadingAvatar}
                 className="w-full bg-gradient-to-r from-white to-gray-100 text-black py-4 rounded-[22px] font-black text-[11px] uppercase tracking-widest active-scale hover:from-purple-600 hover:to-purple-500 hover:text-white transition-all duration-300 disabled:opacity-50">
                 {saving ? (
                   <span className="flex items-center justify-center gap-3">
