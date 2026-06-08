@@ -238,6 +238,12 @@ export default function Admin() {
     fetchPendingOrders()
   }
 
+  const updateRequestStatus = async (id, status) => {
+    const { error } = await supabase.from('game_requests').update({ status }).eq('id', id)
+    if (error) alert('Error: ' + error.message)
+    else fetchRequests()
+  }
+
 
 
   const prepareEdit = (g) => {
@@ -631,6 +637,8 @@ export default function Admin() {
                       <th className="pb-4 px-2">Game Title</th>
                       <th className="pb-4 px-2">Notes & Platform</th>
                       <th className="pb-4 px-2">Date</th>
+                      <th className="pb-4 px-2 text-center">Status</th>
+                      <th className="pb-4 px-2 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -643,6 +651,29 @@ export default function Admin() {
                           {r.notes || '-'}
                         </td>
                         <td className="py-5 px-2 text-[9px] text-gray-500">{r.created_at ? new Date(r.created_at).toLocaleDateString('id-ID') : '-'}</td>
+                        <td className="py-5 px-2 text-center">
+                          <span className={`text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border ${
+                            r.status === 'fullverified' ? 'text-green-400 border-green-500/30 bg-green-500/10' :
+                            r.status === 'proses' ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' :
+                            r.status === 'rejected' ? 'text-red-400 border-red-500/30 bg-red-500/10' :
+                            'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'
+                          }`}>
+                            {r.status || 'pending'}
+                          </span>
+                        </td>
+                        <td className="py-5 px-2">
+                          <div className="flex items-center justify-center gap-1">
+                            <button onClick={() => updateRequestStatus(r.id, 'proses')} title="Proses" className="p-1.5 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg transition-all">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </button>
+                            <button onClick={() => updateRequestStatus(r.id, 'fullverified')} title="Full Verified" className="p-1.5 bg-green-500/10 text-green-400 hover:bg-green-500 hover:text-white rounded-lg transition-all">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </button>
+                            <button onClick={() => updateRequestStatus(r.id, 'rejected')} title="Reject" className="p-1.5 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

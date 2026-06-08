@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -14,6 +14,26 @@ export default function Request() {
   const [notes, setNotes] = useState('')
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [myRequests, setMyRequests] = useState([])
+
+  const fetchMyRequests = async () => {
+    if (!user) return
+    const { data } = await supabase.from('game_requests').select('*').eq('user_email', user.email).order('created_at', { ascending: false })
+    if (data) setMyRequests(data)
+  }
+
+  useEffect(() => {
+    fetchMyRequests()
+    
+    if (user) {
+      const channel = supabase.channel('user_requests')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'game_requests', filter: `user_email=eq.${user.email}` }, () => {
+          fetchMyRequests()
+        })
+        .subscribe()
+        return () => supabase.removeChannel(channel)
+    }
+  }, [user])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -97,6 +117,34 @@ export default function Request() {
                 ) : 'Send Signal'}
               </button>
             </form>
+          </div>
+        )}
+
+        {myRequests.length > 0 && (
+          <div className="mt-16 max-w-lg mx-auto">
+            <h3 className="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-6 px-4">Status Request Kamu</h3>
+            <div className="space-y-4">
+              {myRequests.map(req => (
+                <div key={req.id} className="bg-white/[0.02] border border-white/[0.05] p-5 rounded-[24px] flex items-center justify-between gap-4 hover:bg-white/[0.04] transition-all">
+                  <div className="min-w-0">
+                    <p className="text-[12px] font-black uppercase truncate text-white">{req.game_title}</p>
+                    <p className="text-[9px] text-gray-500 uppercase tracking-widest font-bold mt-1">Platform: {req.platform}</p>
+                  </div>
+                  <div className="shrink-0">
+                    <span className={`text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border ${
+                      req.status === 'fullverified' ? 'text-green-400 border-green-500/30 bg-green-500/10' :
+                      req.status === 'proses' ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' :
+                      req.status === 'rejected' ? 'text-red-400 border-red-500/30 bg-red-500/10' :
+                      'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'
+                    }`}>
+                      {req.status === 'fullverified' ? 'TERSEDIA' : 
+                       req.status === 'proses' ? 'DIPROSES' : 
+                       req.status === 'rejected' ? 'DITOLAK' : 'PENDING'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </main>
