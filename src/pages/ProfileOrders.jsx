@@ -97,7 +97,10 @@ export default function ProfileOrders() {
         <body>
           <div class="receipt">
             <div class="header">
-              <h1>GVR</h1>
+              <h1 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <svg style={{ width: '24px', height: '24px', color: '#a855f7' }} fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                GVR
+              </h1>
               <p>Vault Digital Receipt</p>
             </div>
             <div class="row label">

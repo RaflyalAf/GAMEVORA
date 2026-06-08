@@ -19,8 +19,9 @@ export default function Navbar() {
     <nav className="fixed top-0 w-full z-[1500] glass-nav flex items-center">
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between w-full">
         <div className="flex items-center gap-8 text-left">
-          <Link to="/" className="text-2xl font-black italic tracking-tighter text-gradient uppercase leading-none hover:opacity-80 transition-opacity">
-            GVR
+          <Link to="/" className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+            <svg className="w-6 h-6 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+            <span className="text-2xl font-black italic tracking-tighter text-gradient uppercase leading-none">GVR</span>
           </Link>
           <div className="hidden md:flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.2em]">
             {navLinks.map(link => {

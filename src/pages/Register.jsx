@@ -46,7 +46,10 @@ export default function Register() {
 
       <div className="w-full max-w-[420px] animate-fade-in relative">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-black italic tracking-tighter text-gradient uppercase">GVR</h1>
+          <h1 className="flex items-center justify-center gap-3">
+            <svg className="w-10 h-10 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+            <span className="text-4xl font-black italic tracking-tighter text-gradient uppercase">GVR</span>
+          </h1>
           <div className="section-divider w-16 mx-auto mt-4 mb-4" />
           <p className="text-gray-600 text-[9px] uppercase tracking-[0.3em] font-black">Create your digital vault account</p>
         </div>
