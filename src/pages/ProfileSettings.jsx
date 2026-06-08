@@ -79,7 +79,9 @@ export default function ProfileSettings() {
   }
 
   const requestNotificationPermission = () => {
-    if (!('Notification' in window)) return alert('Browser kamu tidak mendukung fitur notifikasi.')
+    if (!('Notification' in window)) {
+      return alert('🚨 Fitur Notifikasi Terkunci oleh Sistem!\n\nJika kamu menggunakan iPhone/iOS, Apple MENGHARUSKAN kamu menekan tombol "Share" (Bagikan) di Safari lalu memilih "Add to Home Screen".\n\nSilakan lakukan itu, lalu buka kembali GAMEVORA dari Layar Utama HP kamu untuk menyalakan notifikasi.')
+    }
     
     Notification.requestPermission().then(permission => {
       if (permission === 'granted') {
